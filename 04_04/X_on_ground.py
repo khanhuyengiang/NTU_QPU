@@ -37,8 +37,8 @@ CR_pulse.channel = q6_pi_pulse.channel
 rabi_pulse_length = np.arange(0, 1000, 20)
 
 # Setting up pulse lengths for Rabi experiment
-rabi_pulse_length_part_1 = np.arange(0, 300, 20)
-inverting_pulse_length = np.arange(300, 300+q7_pi_pulse.duration,20)
+rabi_pulse_length_part_1 = np.arange(0, 160, 20)
+inverting_pulse_length = np.arange(160, 160+q7_pi_pulse.duration,20)
 rabi_pulse_length_part_2 = np.arange(inverting_pulse_length[-1], 1010, 20)
 
 total_length = np.append(rabi_pulse_length_part_1,inverting_pulse_length)
@@ -58,7 +58,7 @@ for idx, t in enumerate(tqdm(rabi_pulse_length_part_1)):
 
 # Creating pulse sequence for ground state
 ps = PulseSequence(*[CR_pulse, inverting_pulse, q7_ro])
-CR_pulse.duration = 300
+CR_pulse.duration = 160
 for idx, t in enumerate(tqdm(inverting_pulse_length)):
     inverting_pulse.start = CR_pulse.finish
     inverting_pulse.duration = t - inverting_pulse_length[0]
