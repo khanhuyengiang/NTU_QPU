@@ -7,8 +7,8 @@ from tqdm import tqdm
 from reduce_append import *
 
 # Define start times for X pulses
-time_X_pulse_start = 160
-time_2nd_X_pulse_start = 300
+time_X_pulse_start = 80
+time_2nd_X_pulse_start = 240
 
 # Setting execution parameters
 opts = ExecutionParameters(
@@ -55,61 +55,60 @@ crtl_gnd_results = np.zeros(len(total_length))
 crtl_exc_results = np.zeros(len(total_length))
 
 # CR pulse
-ps = PulseSequence(*[q6_pi_pulse, CR_pulse, q7_ro])
-CR_pulse.start = q6_pi_pulse.finish
+ps = PulseSequence(*[CR_pulse, q7_ro])
 for idx, t in enumerate(tqdm(rabi_pulse_length_part_1)):
     CR_pulse.duration = t
     q7_ro.start = CR_pulse.finish
-    crtl_exc_results[idx] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
+    crtl_gnd_results[idx] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
 
 current_index = len(rabi_pulse_length_part_1)
 # First X pulse
-ps = PulseSequence(*[q6_pi_pulse, CR_pulse, inverting_pulse, q7_ro])
+ps = PulseSequence(*[CR_pulse, inverting_pulse, q7_ro])
 CR_pulse.duration = time_X_pulse_start
 for idx, t in enumerate(tqdm(inverting_pulse_length)):
     inverting_pulse.start = CR_pulse.finish
     inverting_pulse.duration = t - inverting_pulse_length[0]
     q7_ro.start = inverting_pulse.finish
-    crtl_exc_results[idx+current_index] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
+    crtl_gnd_results[idx+current_index] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
 
 current_index = current_index + len(inverting_pulse_length)
 # CR pulse
 CR_pulse_2 = CR_pulse.copy()
-ps = PulseSequence(*[q6_pi_pulse, CR_pulse, q7_pi_pulse, CR_pulse_2, q7_ro])
+ps = PulseSequence(*[CR_pulse, q7_pi_pulse, CR_pulse_2, q7_ro])
 q7_pi_pulse.start = CR_pulse.finish
 CR_pulse_2.start = q7_pi_pulse.finish
 
 for idx, t in enumerate(tqdm(rabi_pulse_length_part_2)):
     CR_pulse_2.duration = t-rabi_pulse_length_part_2[0]
     q7_ro.start = CR_pulse_2.finish
-    crtl_exc_results[idx+current_index] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
+    crtl_gnd_results[idx+current_index] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
 
 current_index = current_index + len(rabi_pulse_length_part_2)
 # 2nd X pulse
 inverting_pulse_2 = inverting_pulse.copy()
-ps = PulseSequence(*[q6_pi_pulse, CR_pulse, q7_pi_pulse, CR_pulse_2, inverting_pulse_2, q7_ro])
+ps = PulseSequence(*[CR_pulse, q7_pi_pulse, CR_pulse_2, inverting_pulse_2, q7_ro])
 CR_pulse.duration = time_X_pulse_start
 for idx, t in enumerate(tqdm(inverting_pulse_length_2)):
     inverting_pulse_2.start = CR_pulse_2.finish
     inverting_pulse_2.duration = t - inverting_pulse_length_2[0]
     q7_ro.start = inverting_pulse_2.finish
-    crtl_exc_results[idx+current_index] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
+    crtl_gnd_results[idx+current_index] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
 current_index = current_index + len(inverting_pulse_length_2)
 
 # CR pulse 3
 CR_pulse_3 = CR_pulse.copy()
 q7_pi_pulse_2 = q7_pi_pulse.copy()
-ps = PulseSequence(*[q6_pi_pulse, CR_pulse, q7_pi_pulse, CR_pulse_2, q7_pi_pulse_2, CR_pulse_3, q7_ro])
+ps = PulseSequence(*[CR_pulse, q7_pi_pulse, CR_pulse_2, q7_pi_pulse_2, CR_pulse_3, q7_ro])
 q7_pi_pulse_2.start = CR_pulse_2.finish
 CR_pulse_3.start = q7_pi_pulse_2.finish
 
 for idx, t in enumerate(tqdm(rabi_pulse_length_part_3)):
     CR_pulse_3.duration = t-rabi_pulse_length_part_3[0]
     q7_ro.start = CR_pulse_3.finish
-    crtl_exc_results[idx+current_index] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
+    crtl_gnd_results[idx+current_index] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
 
 # Save results to file
-np.save('X_exc_results.npy', np.asarray(crtl_exc_results))
+np.save('X_gnd_results.npy', np.asarray(crtl_gnd_results))
 np.save('total_length.npy',np.asarray(total_length))
 # Disconnect from platform
 platform.disconnect()
