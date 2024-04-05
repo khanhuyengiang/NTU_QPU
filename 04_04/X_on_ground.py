@@ -5,6 +5,8 @@ from qibolab import create_platform, ExecutionParameters, AveragingMode, Acquisi
 from qibolab.pulses import Pulse, ReadoutPulse, PulseSequence, Drag
 from tqdm import tqdm
 
+time_X_pulse_start = 460
+
 # Setting execution parameters
 opts = ExecutionParameters(
     nshots=1000,  # Number of shots
@@ -37,8 +39,8 @@ CR_pulse.channel = q6_pi_pulse.channel
 rabi_pulse_length = np.arange(0, 1000, 20)
 
 # Setting up pulse lengths for Rabi experiment
-rabi_pulse_length_part_1 = np.arange(0, 160, 20)
-inverting_pulse_length = np.arange(160, 160+q7_pi_pulse.duration,20)
+rabi_pulse_length_part_1 = np.arange(0, time_X_pulse_start, 20)
+inverting_pulse_length = np.arange(time_X_pulse_start, time_X_pulse_start+q7_pi_pulse.duration,20)
 rabi_pulse_length_part_2 = np.arange(inverting_pulse_length[-1], 1010, 20)
 
 total_length = np.append(rabi_pulse_length_part_1,inverting_pulse_length)
@@ -58,7 +60,7 @@ for idx, t in enumerate(tqdm(rabi_pulse_length_part_1)):
 
 # Creating pulse sequence for ground state
 ps = PulseSequence(*[CR_pulse, inverting_pulse, q7_ro])
-CR_pulse.duration = 160
+CR_pulse.duration = time_X_pulse_start
 for idx, t in enumerate(tqdm(inverting_pulse_length)):
     inverting_pulse.start = CR_pulse.finish
     inverting_pulse.duration = t - inverting_pulse_length[0]
