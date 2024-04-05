@@ -109,6 +109,6 @@ for idx, t in enumerate(tqdm(rabi_pulse_length_part_3)):
 
 # Save results to file
 np.save('X_gnd_results.npy', np.asarray(crtl_gnd_results))
-
+np.save('total_length.npy',np.asarray(total_length))
 # Disconnect from platform
 platform.disconnect()
