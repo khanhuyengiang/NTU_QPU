@@ -5,7 +5,7 @@ from qibolab import create_platform, ExecutionParameters, AveragingMode, Acquisi
 from qibolab.pulses import Pulse, ReadoutPulse, PulseSequence, Drag
 from tqdm import tqdm
 
-time_X_pulse_start = 460
+time_X_pulse_start = 160
 
 # Setting execution parameters
 opts = ExecutionParameters(
@@ -62,7 +62,7 @@ CR_pulse.duration = time_X_pulse_start
 for idx, t in enumerate(tqdm(inverting_pulse_length)):
     inverting_pulse.start = CR_pulse.finish
     inverting_pulse.duration = t - inverting_pulse_length[0]
-    q7_ro.start = q7_pi_pulse.finish
+    q7_ro.start = inverting_pulse.finish
     crtl_exc_results[idx+len(rabi_pulse_length_part_1)] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
 
 
