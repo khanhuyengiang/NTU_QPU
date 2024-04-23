@@ -109,7 +109,7 @@ for idx, t in enumerate(tqdm(rabi_pulse_length_part_3)):
     crtl_exc_results[idx+current_index] = platform.execute_pulse_sequence(ps, opts)[q7_ro.serial].magnitude
 
 # Save results to file
-np.save(f'two_X_at_{time_X_pulse_start}_exc_results.npy', np.asarray(crtl_exc_results))
-np.save(f'two_X_at_{time_X_pulse_start}_total_length.npy',np.asarray(total_length))
+np.save(f'two_X_at_{time_X_pulse_start}_and_{time_2nd_X_pulse_start}_exc_results.npy', np.asarray(crtl_exc_results))
+np.save(f'two_X_at_{time_X_pulse_start}_and_{time_2nd_X_pulse_start}_total_length.npy',np.asarray(total_length))
 # Disconnect from platform
 platform.disconnect()
