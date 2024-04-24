@@ -29,8 +29,13 @@ cr_pulse = platform.create_RX_pulse(qubit=TGT, start=crtl_pi_pulse.finish)
 cr_pulse.channel = crtl_pi_pulse.channel
 cr_pulse.amplitude = 1
 
-ps = PulseSequence(*[cr_pulse, tgt_ro_pulse])
+correction_pulse = platform.create_qubit_drive_pulse(qubit=CRTL,start = cr_pulse.start,duration =1)
+correction_pulse.channel = crtl_pi_pulse.channel
+correction_pulse.amplitude = 0.1
+
+ps = PulseSequence(*[correction_pulse, cr_pulse, tgt_ro_pulse])
 for idx, t in enumerate(sweep):
+    correction_pulse.duration = t
     cr_pulse.duration = t
     tgt_ro_pulse.start = cr_pulse.finish
     res1[idx] = platform.execute_pulse_sequence(ps, opts)[tgt_ro_pulse.serial].magnitude
@@ -41,11 +46,10 @@ for idx, t in enumerate(sweep):
     tgt_ro_pulse.start = cr_pulse.finish
     res2[idx] = platform.execute_pulse_sequence(ps, opts)[tgt_ro_pulse.serial].magnitude
 
-np.save(f"./data/crtl_0_cr_{CRTL}{TGT}", res1)
-np.save(f"./data/crtl_1_cr_{CRTL}{TGT}", res2)
 
-gnd = np.load(f"./data/crtl_0_cr_{CRTL}{TGT}.npy")
-exc = np.load(f"./data/crtl_1_cr_{CRTL}{TGT}.npy")
+
+gnd = res1
+exc = res2
 
 t = sweep
 
@@ -58,4 +62,4 @@ plt.ylabel("Amplitude [arb. units]")
 plt.legend()
 plt.title("Q{} as control, Q{} as target".format(CRTL + 1, TGT + 1))
 plt.tight_layout()
-plt.savefig(f"./plots/CR_{CRTL}{TGT}.png", dpi=300)
+plt.savefig(f"./plots/correction_CR_{CRTL}{TGT}.png", dpi=300)

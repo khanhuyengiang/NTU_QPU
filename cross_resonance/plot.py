@@ -1,14 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-CRTL = 2
-TGT = 3
+CRTL = 3
+TGT = 2
 
 
 gnd = np.load(f"./data/crtl_0_cr_{CRTL}{TGT}.npy")
 exc = np.load(f"./data/crtl_1_cr_{CRTL}{TGT}.npy")
 
-t = np.arange(0, 1000, 20)
+t = np.arange(0, 5000, 50)
 
 plt.scatter(t, gnd, color="blue", label=r"$Q_{CRTL} = |0\rangle$")
 plt.scatter(t, exc, color="orange", label=r"$Q_{CRTL} = |1\rangle$")
