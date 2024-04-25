@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 from qibolab import create_platform, ExecutionParameters, AveragingMode, AcquisitionType
 from qibolab.pulses import PulseSequence
 
-CRTL = 2
-TGT = 3
+CRTL = 0
+TGT = 2
 
 opts = ExecutionParameters(
     nshots=1000,
@@ -17,7 +17,7 @@ opts = ExecutionParameters(
 platform = create_platform("icarusq_iqm5q")
 platform.connect()
 
-sweep = np.arange(0, 5000, 50)
+sweep = np.arange(0, 8000, 200)
 res1 = np.zeros(len(sweep))
 res2 = np.zeros(len(sweep))
 
@@ -49,9 +49,8 @@ exc = np.load(f"./data/crtl_1_cr_{CRTL}{TGT}.npy")
 
 t = sweep
 
-plt.scatter(t, gnd, color="blue", label=r"$Q_{CRTL} = |0\rangle$")
-plt.scatter(t, exc, color="orange", label=r"$Q_{CRTL} = |1\rangle$")
-plt.plot(t, exc, color="orange")
+plt.plot(t, gnd, color="blue",marker='o', linestyle='-', label=r"$Q_{CRTL} = |0\rangle$")
+plt.plot(t, exc, color="orange",marker='o', linestyle='-', label=r"$Q_{CRTL} = |1\rangle$")
 plt.grid()
 plt.xlabel("CR Pulse Duration [ns]")
 plt.ylabel("Amplitude [arb. units]")
