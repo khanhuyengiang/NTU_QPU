@@ -1,11 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from simple_normalize import normalize_to_minus_one_one
 
 from qibolab import create_platform, ExecutionParameters, AveragingMode, AcquisitionType
 from qibolab.pulses import PulseSequence
 
-CRTL = 0
-TGT = 2
+CRTL = 2
+TGT = 0
 
 opts = ExecutionParameters(
     nshots=1000,
@@ -17,7 +18,7 @@ opts = ExecutionParameters(
 platform = create_platform("icarusq_iqm5q")
 platform.connect()
 
-sweep = np.arange(0, 8000, 200)
+sweep = np.arange(0, 5000, 100)
 res1 = np.zeros(len(sweep))
 res2 = np.zeros(len(sweep))
 
@@ -48,12 +49,14 @@ gnd = np.load(f"./data/crtl_0_cr_{CRTL}{TGT}.npy")
 exc = np.load(f"./data/crtl_1_cr_{CRTL}{TGT}.npy")
 
 t = sweep
+gnd,exc = normalize_to_minus_one_one(gnd,exc)
 
 plt.plot(t, gnd, color="blue",marker='o', linestyle='-', label=r"$Q_{CRTL} = |0\rangle$")
 plt.plot(t, exc, color="orange",marker='o', linestyle='-', label=r"$Q_{CRTL} = |1\rangle$")
+
 plt.grid()
 plt.xlabel("CR Pulse Duration [ns]")
-plt.ylabel("Amplitude [arb. units]")
+plt.ylabel("Expectation Value")
 plt.legend()
 plt.title("Q{} as control, Q{} as target".format(CRTL + 1, TGT + 1))
 plt.tight_layout()

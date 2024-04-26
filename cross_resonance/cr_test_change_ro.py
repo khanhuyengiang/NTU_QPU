@@ -5,8 +5,8 @@ from qibolab import create_platform, ExecutionParameters, AveragingMode, Acquisi
 from qibolab.pulses import PulseSequence
 from simple_normalize import normalize_to_minus_one_one
 
-CRTL = 3
-TGT = 2
+CRTL = 2
+TGT = 3
 
 opts = ExecutionParameters(
     nshots=1000,
@@ -18,7 +18,7 @@ opts = ExecutionParameters(
 platform = create_platform("icarusq_iqm5q")
 platform.connect()
 
-sweep = np.arange(0, 15000, 200)
+sweep = np.arange(0, 5000, 100)
 res1 = np.zeros(len(sweep))
 res2 = np.zeros(len(sweep))
 
